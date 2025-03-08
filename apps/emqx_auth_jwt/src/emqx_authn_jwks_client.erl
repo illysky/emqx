@@ -137,11 +137,14 @@ handle_options(#{
     refresh_interval := RefreshInterval0,
     ssl_opts := SSLOpts
 }) ->
+    UpdatedSSLOpts = SSLOpts#{
+        customize_hostname_check => [{match_fun, public_key:pkix_verify_hostname_match_fun(https)}]
+    },
     #{
         endpoint => Endpoint,
         headers => to_httpc_headers(Headers),
         refresh_interval => limit_refresh_interval(RefreshInterval0),
-        ssl_opts => maps:to_list(SSLOpts),
+        ssl_opts => maps:to_list(UpdatedSSLOpts),
         jwks => [],
         request_id => undefined
     }.
